@@ -151,9 +151,9 @@ const rateBook = (bookId, rating) => async (dispatch) => {
       payload: bookId,
       rating,
     });
-    dispatch({ type: ActionTypes.BOOK_RATING_SUCCESS, payload: rating });
+    const { data } = await api.put("/api/books/update/rate/" + bookId, rating);
+    dispatch({ type: ActionTypes.BOOK_RATING_SUCCESS, payload: data });
     window.location.replace("/");
-    await api.put("/api/books/update/rate/" + bookId, rating);
   } catch (error) {
     dispatch({
       type: ActionTypes.BOOK_RATING_FAIL,
