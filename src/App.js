@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Header from "./containers/Header";
+import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./containers/Dashboard";
+import SingleBook from "./containers/SingleBook";
+import AuthRoute from "./utils/AuthRoute";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <Router>
+        <Header />
+        <Switch>
+          <AuthRoute exact path={"/"} component={Dashboard} />
+          <Route exact path={"/login"} component={Login} />
+          <Route exact path={"/register"} component={Register} />
+          <AuthRoute exact path={"/books/:id"} component={SingleBook} />
+          <Route exact path={"**"} component={NotFound} />
+        </Switch>
+      </Router>
+    </React.Fragment>
   );
-}
+};
 
 export default App;

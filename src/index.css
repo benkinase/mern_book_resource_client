@@ -1,13 +1,168 @@
+@import url("https://fonts.googleapis.com/css2?family=Philosopher:ital@1&family=Poppins:wght@300&display=swap");
+
+:root {
+  --mainBlue: #170f8b;
+  --veryBlue: #05487e;
+  --lightBlue: #0fa3f8;
+  --mainWhite: #f5f5ee;
+  --secondWhite: floralwhite;
+  --mainDark: #232528;
+  --mainYellow: #ff7b00;
+  --secYellow: #f37d0e;
+  --lightRed: rgb(243, 21, 139);
+  --mainTransition: all 0.3s linear;
+  --mainSpacing: 0.3rem;
+  --lightShadow: 2px 5px 3px 0px rgba(0, 0, 0, 0.5);
+  --darkShadow: 4px 10px 5px 3px rgba(0, 0, 0, 0.5);
+  --formColor: rgb(113, 100, 114);
+  --profileBg: rgb(243, 248, 253);
+
+  --offWhite: #f3f3e5;
+  --mainGrey: #dbd4d4;
+  --darkGrey: #cfcfcf;
+}
+::selection {
+  color: var(--lightRed);
+}
 body {
+  padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+.app {
+  background-color: var(--secondWhite);
+  min-height: 100vh;
+}
+/*
+========================================================================================================================
+  Navbar
+========================================================================================================================
+  */
+.navbar {
+  top: 0;
+  background: var(--mainGrey);
+}
+.nav-center {
+  width: 100%;
+  max-width: 1170px;
+  margin: 0 auto;
+}
+.nav-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  -webkit-box-align: center;
+  align-items: center;
+}
+.nav-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  justify-self: flex-end;
+}
+.nav-btn:focus {
+  outline: none;
+}
+.nav-icon {
+  font-size: 1.5rem;
+  color: var(--mainYellow);
+  transition: var(--mainTransition);
+}
+.nav-icon:hover {
+  color: var(--lightRed);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/*Hide nav links*/
+.nav-links {
+  height: 0;
+  overflow: hidden;
+  transition: var(--mainTransition);
+  list-style-type: none;
+}
+.nav-links a {
+  display: block;
+  text-decoration: none;
+  padding: 0.5rem 0;
+  color: var(--mainBlack);
+  transition: var(--mainTransition);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: var(--mainSpacing);
+  text-transform: uppercase;
+}
+.nav-links a:hover {
+  color: var(--mainBlue);
+}
+
+.show-nav-links {
+  height: 140px;
+}
+@media screen and (min-width: 800px) {
+  .nav-btn {
+    display: none;
+  }
+  .nav-center {
+    max-width: 1170px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-links {
+    height: auto;
+    display: flex;
+    margin-top: 0.5rem;
+  }
+  .nav-links a {
+    margin: 0 0.5rem;
+  }
+}
+
+/*Globals*/
+.text-title {
+  font-family: "Poppins", sans-serif;
+  letter-spacing: var(--mainSpacing);
+  text-transform: uppercase;
+}
+.blue-text {
+  color: var(--mainBlue);
+}
+.white-bg {
+  background-color: floralwhite;
+}
+.text-popins {
+  font-family: "Poppins", sans-serif;
+}
+
+.light-blue {
+  color: var(--lightBlue);
+}
+.yellow-text {
+  color: var(--mainYellow);
+}
+.red-text {
+  color: var(--lightRed);
+}
+.bold-text {
+  font-weight: 800;
+}
+.blue-bg {
+  background-color: #593a60;
+}
+.justify-body {
+  text-align: justify;
+}
+.item-center {
+  text-align: center;
+}
+
+.fas {
+  font-size: 1.2rem;
+  color: var(--veryBlue);
+  transition: var(--mainTransition);
+}
+.fas:hover {
+  color: var(--mainYellow);
+  cursor: pointer;
 }
