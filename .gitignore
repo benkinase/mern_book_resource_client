@@ -26,4 +26,4 @@ yarn-error.log*
 Dockerfile
 docker-compose.yml
 doc.txt
-_redirects
+redirects

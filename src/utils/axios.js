@@ -6,7 +6,7 @@ import axios from "axios";
 const currentUser = JSON.parse(localStorage.getItem("user"));
 let headers = {};
 
-// attached  user token to requests
+// attach user"s token to requests
 if (currentUser && currentUser.token) {
   headers.Authorization = `Bearer ${currentUser.token}`;
 }
