@@ -11,8 +11,8 @@ import StarRating from "./StarRating";
 import styled from "styled-components";
 
 export default function Book({ book, edit }) {
-  const selectedUser = useSelector((state) => state.auth);
-  const { user } = selectedUser;
+  const { user } = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
 
   const deleteHandler = (book) => {
@@ -21,6 +21,7 @@ export default function Book({ book, edit }) {
   };
   const toggleHandler = (book) => {
     dispatch(toggleIsRead(book._id));
+    dispatch(getUserBooks(user.id));
   };
 
   // conditional styling

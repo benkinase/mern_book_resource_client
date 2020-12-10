@@ -1,6 +1,7 @@
 import { ActionTypes } from "./ActionTypes";
 import api from "../../utils/axios";
 
+// load user
 export const loadUser = () => async (dispatch, getState) => {
   dispatch({
     type: ActionTypes.USER_LOAD_REQUEST,
@@ -17,6 +18,7 @@ export const loadUser = () => async (dispatch, getState) => {
   }
 };
 
+// log in existing user
 export const login = (loginDetails) => async (dispatch) => {
   dispatch({
     type: ActionTypes.USER_LOGIN_REQUEST,
@@ -24,11 +26,10 @@ export const login = (loginDetails) => async (dispatch) => {
   });
   try {
     const { data } = await api.post("/api/users/login", loginDetails);
-    console.log(data);
     localStorage.setItem("user", JSON.stringify(data));
     dispatch({
       type: ActionTypes.USER_LOGIN_SUCCESS,
-      payload: JSON.stringify(data),
+      payload: data,
     });
   } catch (error) {
     dispatch({
@@ -38,6 +39,7 @@ export const login = (loginDetails) => async (dispatch) => {
   }
 };
 
+// register new user
 export const register = (signupDetails) => async (dispatch) => {
   dispatch({
     type: ActionTypes.USER_REGISTER_REQUEST,
@@ -54,20 +56,14 @@ export const register = (signupDetails) => async (dispatch) => {
   }
 };
 
-export const updateUser = ({ userId, name, email, password }) => async (
-  dispatch,
-  getState
-) => {
+// update user detail/s
+export const updateUser = (updData) => async (dispatch) => {
   dispatch({
     type: ActionTypes.USER_UPDATE_REQUEST,
-    payload: { userId, name, email, password },
+    payload: updData,
   });
   try {
-    const { data } = await api.put("/api/users/" + userId, {
-      name,
-      email,
-      password,
-    });
+    const { data } = await api.put("/api/users/" + updData._id, updData);
     dispatch({ type: ActionTypes.USER_UPDATE_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
@@ -77,7 +73,7 @@ export const updateUser = ({ userId, name, email, password }) => async (
   }
 };
 
-// logout user
+// log out user
 export const logoutUser = () => async (dispatch) => {
   localStorage.removeItem("user");
   dispatch({ type: ActionTypes.USER_LOGOUT });
@@ -87,7 +83,6 @@ export const logoutUser = () => async (dispatch) => {
 export const tokenConfig = (getState) => {
   // Get token from auth state
   const token = getState().auth.token;
-
   // Headers
   const config = {
     headers: {
@@ -97,19 +92,8 @@ export const tokenConfig = (getState) => {
 
   // If token, add to headers
   if (token) {
-    config.headers.authorization = token;
+    config.headers.authorization = `Bearer ${token}`;
   }
 
   return config;
 };
-
-// //"http://localhost:9000/";
-
-// // get current user
-// const currentUser = JSON.parse(localStorage.getItem("user"));
-// let headers = {};
-
-// // attach user"s token to requests
-// if (currentUser && currentUser.token) {
-//   headers.Authorization = `Bearer ${currentUser.token}`;
-// }

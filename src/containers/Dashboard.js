@@ -103,7 +103,7 @@ export default function Dashboard() {
               <Form.Control
                 autoFocus
                 type="text"
-                value={title}
+                value={title || ""}
                 onChange={(e) => setTitle(e.target.value)}
               />
             </Form.Group>
@@ -112,7 +112,7 @@ export default function Dashboard() {
               <Form.Control
                 autoFocus
                 type="text"
-                value={url}
+                value={url || ""}
                 onChange={(e) => setUrl(e.target.value)}
               />
             </Form.Group>
@@ -122,7 +122,7 @@ export default function Dashboard() {
                 autoFocus
                 required
                 type="text"
-                value={author}
+                value={author || ""}
                 onChange={(e) => setAuthor(e.target.value)}
               />
             </Form.Group>

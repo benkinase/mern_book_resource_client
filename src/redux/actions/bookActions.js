@@ -107,7 +107,7 @@ const deleteBook = (id) => async (dispatch, getState) => {
   console.log(id);
   try {
     dispatch({ type: ActionTypes.BOOK_DELETE_REQUEST, payload: id });
-    await api.delete("/api/books/delete/" + id, tokenConfig(getState));
+    await api.delete("/api/books/" + id, tokenConfig(getState));
     dispatch({
       type: ActionTypes.BOOK_DELETE_SUCCESS,
       payload: id,
@@ -130,9 +130,11 @@ const toggleIsRead = (bookId) => async (dispatch, getState) => {
       type: ActionTypes.BOOK_READ_REQUEST,
       payload: bookId,
     });
-    await api.put("/api/books/update/read/" + bookId, tokenConfig(getState));
-    dispatch({ type: ActionTypes.BOOK_READ_SUCCESS, payload: bookId });
-    window.location.replace("/");
+    const { data } = await api.put(
+      "/api/books/isRead/" + bookId,
+      tokenConfig(getState)
+    );
+    dispatch({ type: ActionTypes.BOOK_READ_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
       type: ActionTypes.BOOK_READ_FAIL,
@@ -149,12 +151,12 @@ const rateBook = (bookId, rating) => async (dispatch, getState) => {
       rating,
     });
     const { data } = await api.put(
-      "/api/books/update/rate/" + bookId,
+      "/api/books/rate/" + bookId,
       rating,
       tokenConfig(getState)
     );
+    console.log(data);
     dispatch({ type: ActionTypes.BOOK_RATING_SUCCESS, payload: data });
-    window.location.replace("/");
   } catch (error) {
     dispatch({
       type: ActionTypes.BOOK_RATING_FAIL,

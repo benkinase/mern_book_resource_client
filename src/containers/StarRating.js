@@ -11,6 +11,10 @@ export default function StarRating(props) {
   const dispatch = useDispatch();
   rating && dispatch(rateBook(props.id, { rating }));
 
+  React.useEffect(() => {
+    rating && window.location.reload(false);
+  }, [rating]);
+
   return (
     <Star>
       {[...Array(5)].map((_, i) => {

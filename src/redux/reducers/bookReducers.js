@@ -80,7 +80,7 @@ function bookReadSaveReducer(state = { books: [] }, action) {
     case ActionTypes.BOOK_READ_SUCCESS: {
       return Object.assign({}, state, {
         books: state.books.map((book) => {
-          if (book.id !== action.payload) {
+          if (book._id !== action.payload._id) {
             return book;
           }
           return Object.assign({}, book, {
@@ -98,22 +98,15 @@ function bookReadSaveReducer(state = { books: [] }, action) {
       return state;
   }
 }
-function bookRatingSaveReducer(state = { books: [] }, action) {
+function bookRatingSaveReducer(state = { book: {} }, action) {
   switch (action.type) {
     case ActionTypes.BOOK_RATING_REQUEST:
       return Object.assign({}, state, { loading: true });
-    case ActionTypes.BOOK_RATING_SUCCESS: {
+    case ActionTypes.BOOK_RATING_SUCCESS:
       return Object.assign({}, state, {
-        books: state.books.map((book) => {
-          if (book.id !== action.payload) {
-            return book;
-          }
-          return Object.assign({}, book, {
-            rating: action.payload.rating,
-          });
-        }),
+        book: action.payload,
       });
-    }
+
     case ActionTypes.BOOK_RATING_FAIL:
       return Object.assign({}, state, {
         loading: false,
