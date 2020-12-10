@@ -1,20 +1,24 @@
 import Swal from "sweetalert2";
 import { ActionTypes } from "./ActionTypes";
+import { tokenConfig } from "./authActions";
 import api from "../../utils/axios";
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
   showConfirmButton: false,
   timer: 3000,
-  background: "green",
+  background: "white",
 });
 
 // list book action
-const getUserBooks = (id) => async (dispatch) => {
+const getUserBooks = (id) => async (dispatch, getState) => {
+  //console.log(tokenConfig(getState));
   try {
-    dispatch({ type: ActionTypes.USER_BOOK_LIST_REQUEST, id });
-    const { data } = await api.get("/api/books/user/" + id);
-    //console.log(data);
+    dispatch({ type: ActionTypes.USER_BOOK_LIST_REQUEST, payload: id });
+    const { data } = await api.get(
+      "/api/books/user/" + id,
+      tokenConfig(getState)
+    );
     dispatch({
       type: ActionTypes.USER_BOOK_LIST_SUCCESS,
       payload: data,
@@ -26,10 +30,10 @@ const getUserBooks = (id) => async (dispatch) => {
     });
   }
 };
-const getAllBooks = () => async (dispatch) => {
+const getAllBooks = () => async (dispatch, getState) => {
   try {
     dispatch({ type: ActionTypes.BOOK_LIST_REQUEST });
-    const { data } = await api.get("/api/books");
+    const { data } = await api.get("/api/books", tokenConfig(getState));
     dispatch({
       type: ActionTypes.BOOK_LIST_SUCCESS,
       payload: data,
@@ -37,25 +41,27 @@ const getAllBooks = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: ActionTypes.BOOK_LIST_FAIL,
-      payload: error.message,
+      payload: error.response.data.message,
     });
   }
 };
 
 // book detail action
-const getBookDetails = (bookId) => async (dispatch) => {
+const getBookDetails = (bookId) => async (dispatch, getState) => {
   try {
     dispatch({
       type: ActionTypes.BOOK_DETAILS_REQUEST,
       payload: bookId,
     });
-    const { data } = await api.get("/api/books/" + bookId);
-    console.log(data);
+    const { data } = await api.get(
+      "/api/books/" + bookId,
+      tokenConfig(getState)
+    );
     dispatch({ type: ActionTypes.BOOK_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
       type: ActionTypes.BOOK_DETAILS_FAIL,
-      payload: error.message,
+      payload: error.response.data.message,
     });
   }
 };
@@ -66,18 +72,24 @@ const saveBook = (book) => async (dispatch, getState) => {
     dispatch({ type: ActionTypes.BOOK_SAVE_REQUEST, payload: book });
 
     if (!book._id) {
-      const { data } = await api.post("/api/books/new", book);
+      const { data } = await api.post(
+        "/api/books/new",
+        book,
+        tokenConfig(getState)
+      );
       dispatch({ type: ActionTypes.BOOK_SAVE_SUCCESS, payload: data });
       Toast.fire({
         type: "success",
         title: "Item successfully added",
       });
     } else {
-      const { data } = await api.put("/api/books/update/" + book._id, book);
+      const { data } = await api.put(
+        "/api/books/update/" + book._id,
+        book,
+        tokenConfig(getState)
+      );
       dispatch({ type: ActionTypes.BOOK_SAVE_SUCCESS, payload: data });
-      setTimeout(() => {
-        window.location.reload(false);
-      }, 50);
+
       Toast.fire({
         type: "success",
         title: "Item successfully updated",
@@ -91,32 +103,19 @@ const saveBook = (book) => async (dispatch, getState) => {
   }
 };
 
-const deleteBook = (bookId) => async (dispatch, getState) => {
+const deleteBook = (id) => async (dispatch, getState) => {
+  console.log(id);
   try {
-    dispatch({ type: ActionTypes.BOOK_DELETE_REQUEST, payload: bookId });
-
-    const result = Swal.fire({
-      height: 100,
-      title: `Sure to delete this item?`,
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#38778e",
-      cancelButtonColor: "#f10e8f",
-      confirmButtonText: "Yes, delete it!",
+    dispatch({ type: ActionTypes.BOOK_DELETE_REQUEST, payload: id });
+    await api.delete("/api/books/delete/" + id, tokenConfig(getState));
+    dispatch({
+      type: ActionTypes.BOOK_DELETE_SUCCESS,
+      payload: id,
     });
-    if (result.isConfirmed) {
-      const { data } = await api.delete("/api/books/delete/" + bookId);
-      dispatch({
-        type: ActionTypes.BOOK_DELETE_SUCCESS,
-        payload: data,
-        success: true,
-      });
-      Toast.fire({
-        type: "success",
-        title: "Book successfully deleted",
-      });
-    }
+    Toast.fire({
+      type: "success",
+      title: "Book successfully deleted",
+    });
   } catch (error) {
     dispatch({
       type: ActionTypes.BOOK_DELETE_FAIL,
@@ -131,33 +130,35 @@ const toggleIsRead = (bookId) => async (dispatch, getState) => {
       type: ActionTypes.BOOK_READ_REQUEST,
       payload: bookId,
     });
-    const { data } = await api.put("/api/books/update/read/" + bookId);
-    dispatch({ type: ActionTypes.BOOK_READ_SUCCESS, payload: data });
-    setTimeout(() => {
-      window.location.reload(false);
-    }, 50);
+    await api.put("/api/books/update/read/" + bookId, tokenConfig(getState));
+    dispatch({ type: ActionTypes.BOOK_READ_SUCCESS, payload: bookId });
+    window.location.replace("/");
   } catch (error) {
     dispatch({
       type: ActionTypes.BOOK_READ_FAIL,
-      payload: error.message,
+      payload: error.response.data.message,
     });
   }
 };
 
-const rateBook = (bookId, rating) => async (dispatch) => {
+const rateBook = (bookId, rating) => async (dispatch, getState) => {
   try {
     dispatch({
       type: ActionTypes.BOOK_RATING_REQUEST,
       payload: bookId,
       rating,
     });
-    const { data } = await api.put("/api/books/update/rate/" + bookId, rating);
+    const { data } = await api.put(
+      "/api/books/update/rate/" + bookId,
+      rating,
+      tokenConfig(getState)
+    );
     dispatch({ type: ActionTypes.BOOK_RATING_SUCCESS, payload: data });
     window.location.replace("/");
   } catch (error) {
     dispatch({
       type: ActionTypes.BOOK_RATING_FAIL,
-      payload: error.message,
+      payload: error.response.data.message,
     });
   }
 };

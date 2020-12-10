@@ -7,8 +7,9 @@ import { saveBook } from "../redux/actions/bookActions";
 import styled from "styled-components";
 
 export default function Dashboard() {
-  const selectedUser = useSelector((state) => state.authR);
+  const selectedUser = useSelector((state) => state.auth);
   const { user } = selectedUser;
+
   const userBooks = useSelector((state) => state.userBooks);
   //const bookList = useSelector((state) => state.bookList);
   const { books, loading, error } = userBooks;
@@ -18,7 +19,7 @@ export default function Dashboard() {
   useEffect(() => {
     //dispatch(getAllBooks());
     setIsMounted(true);
-    isMounted && dispatch(getUserBooks(user.userId));
+    isMounted && dispatch(getUserBooks(user.id));
     //console.log(books);
     return () => {
       setIsMounted(false);
@@ -47,11 +48,11 @@ export default function Dashboard() {
       handleClose();
     }
     // refresh list/page
-    dispatch(getUserBooks(user.userId));
+    dispatch(getUserBooks(user?.id));
     return () => {
       //
     };
-  }, [successSave, dispatch, user.userId]);
+  }, [successSave, dispatch, user]);
 
   const openModal = (book) => {
     handleShow();
@@ -63,10 +64,10 @@ export default function Dashboard() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newBook = { _id: id, title, author, owner: user.userId, url };
+    const newBook = { _id: id, title, author, owner: user.id, url };
     dispatch(saveBook(newBook));
     setTimeout(() => {
-      dispatch(getUserBooks(user.userId));
+      dispatch(getUserBooks(user.id));
     }, 5000);
   };
 

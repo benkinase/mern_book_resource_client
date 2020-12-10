@@ -1,22 +1,46 @@
 import { ActionTypes } from "../actions/ActionTypes";
 
-function userLoginReducer(state = {}, action) {
+const initialState = {
+  user: null,
+  token: null,
+  isAuthed: false,
+  loading: false,
+  error: null,
+};
+export default function authReducer(state = initialState, action) {
   switch (action.type) {
+    // case ActionTypes.USER_LOAD_REQUEST:
+    //   return {
+    //     ...state,
+    //     loading: true,
+    //   };
+    // case ActionTypes.USER_LOAD_SUCCESS:
+    //   return {
+    //     ...state,
+    //     isAuthed: true,
+    //     loading: false,
+    //     user: action.payload.user,
+    //   };
+    // case ActionTypes.USER_LOAD_FAIL:
+    //   return {
+    //     ...state,
+    //     error: action.payload,
+    //   };
+
     case ActionTypes.USER_LOGIN_REQUEST:
       return { loading: true };
     case ActionTypes.USER_LOGIN_SUCCESS:
-      return { loading: false, user: action.payload };
+      return {
+        loading: false,
+        isAuthed: true,
+        token: action.payload.token,
+        user: action.payload.user,
+      };
     case ActionTypes.USER_LOGIN_FAIL:
       return { loading: false, error: action.payload };
     case ActionTypes.USER_LOGOUT:
       return {};
-    default:
-      return state;
-  }
-}
 
-function userRegisterReducer(state = {}, action) {
-  switch (action.type) {
     case ActionTypes.USER_REGISTER_REQUEST:
       return { loading: true };
     case ActionTypes.USER_REGISTER_SUCCESS:
@@ -27,21 +51,14 @@ function userRegisterReducer(state = {}, action) {
       };
     case ActionTypes.USER_REGISTER_FAIL:
       return { loading: false, error: action.payload };
-    default:
-      return state;
-  }
-}
 
-function userUpdateReducer(state = {}, action) {
-  switch (action.type) {
     case ActionTypes.USER_UPDATE_REQUEST:
       return { loading: true };
     case ActionTypes.USER_UPDATE_SUCCESS:
-      return { loading: false, user: action.payload };
+      return { loading: false, user: action.payload.user };
     case ActionTypes.USER_UPDATE_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;
   }
 }
-export { userLoginReducer, userRegisterReducer, userUpdateReducer };

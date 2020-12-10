@@ -1,20 +1,14 @@
 import axios from "axios";
 
-//"http://localhost:9000/";
-
-// get current user
-const currentUser = JSON.parse(localStorage.getItem("user"));
-let headers = {};
-
-// attach user"s token to requests
-if (currentUser && currentUser.token) {
-  headers.Authorization = `Bearer ${currentUser.token}`;
-}
-
 // axios instance
+let baseURL;
+if (process.env.NODE_ENV !== "production") {
+  baseURL = "http://127.0.0.1:9000/";
+} else {
+  baseURL = process.env.REACT_APP_BACKEND_URL;
+}
 const api = axios.create({
-  baseURL: process.env.REACT_APP_BACKEND_URL,
-  headers,
+  baseURL: baseURL,
 });
 
 export default api;

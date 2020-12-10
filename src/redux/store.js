@@ -2,18 +2,19 @@ import { createStore, applyMiddleware, compose } from "redux";
 import rootReducer from "./reducers";
 import thunk from "redux-thunk";
 
-const user = JSON.parse(localStorage.getItem("user")) || null;
+const user = localStorage.getItem("user") || null;
 
 const initialState = {
-  authR: { user },
+  auth: { user },
 };
 
 if (localStorage.getItem("user")) {
-  const decodedToken = JSON.parse(localStorage.getItem("user"));
+  const decodedToken = JSON.parse(user);
   if (decodedToken.exp * 1000 < Date.now()) {
     localStorage.removeItem("user");
   } else {
-    initialState.authR.user = decodedToken;
+    initialState.auth.user = decodedToken.user;
+    initialState.auth.token = decodedToken.token;
   }
 }
 

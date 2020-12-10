@@ -1,15 +1,26 @@
 import React from "react";
 import moment from "moment";
 import { Card } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { deleteBook, toggleIsRead } from "../redux/actions/bookActions";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteBook,
+  toggleIsRead,
+  getUserBooks,
+} from "../redux/actions/bookActions";
 import StarRating from "./StarRating";
 import styled from "styled-components";
 
 export default function Book({ book, edit }) {
+  const selectedUser = useSelector((state) => state.auth);
+  const { user } = selectedUser;
   const dispatch = useDispatch();
+
   const deleteHandler = (book) => {
     dispatch(deleteBook(book._id));
+    dispatch(getUserBooks(user.id));
+  };
+  const toggleHandler = (book) => {
+    dispatch(toggleIsRead(book._id));
   };
 
   // conditional styling
@@ -41,7 +52,7 @@ export default function Book({ book, edit }) {
           </span>
           <span
             className=" ml-3 badge badge-primary btn"
-            onClick={() => dispatch(toggleIsRead(book._id))}
+            onClick={() => toggleHandler(book)}
           >
             {book.isRead ? "unread" : "read"}
           </span>

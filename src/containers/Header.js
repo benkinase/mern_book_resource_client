@@ -1,14 +1,14 @@
 import React from "react";
 import { FaAlignLeft } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
-import { logoutUser } from "../redux/actions/userActions";
+import { logoutUser } from "../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import logo from "../logo.svg";
 import { useHistory } from "react-router-dom";
 
 export default function Header() {
   let history = useHistory();
-  const selectedUser = useSelector((state) => state.authR);
+  const selectedUser = useSelector((state) => state.auth);
   const { user } = selectedUser;
   //console.log(user);
   const dispatch = useDispatch();

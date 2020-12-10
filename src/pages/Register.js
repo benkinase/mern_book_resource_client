@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import styled from "styled-components/macro";
 import { useSelector, useDispatch } from "react-redux";
-import { register } from "../redux/actions/userActions";
+import { register } from "../redux/actions/authActions";
 
 export default function Register(props) {
-  const selectedUser = useSelector((state) => state.authR);
+  const selectedUser = useSelector((state) => state.auth);
   const { loading, user, error } = selectedUser;
 
   const dispatch = useDispatch();
@@ -16,9 +16,7 @@ export default function Register(props) {
   });
 
   React.useEffect(() => {
-    if (user?.token) {
-      props.history.push("/");
-    }
+    user && props.history.push("/");
     return () => {
       //cleanup
     };

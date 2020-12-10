@@ -1,6 +1,8 @@
 import { ActionTypes } from "../actions/ActionTypes";
 
-function bookListReducer(state = { books: [] }, action) {
+const initialState = { books: [] };
+
+function bookListReducer(state = initialState, action) {
   switch (action.type) {
     case ActionTypes.BOOK_LIST_REQUEST:
       return { ...state, loading: true };
@@ -40,14 +42,19 @@ function bookDetailsReducer(state = { book: {} }, action) {
   }
 }
 
-function bookDeleteReducer(state = { book: {} }, action) {
+function bookDeleteReducer(state = { books: [] }, action) {
   switch (action.type) {
     case ActionTypes.BOOK_DELETE_REQUEST:
-      return { loading: true };
+      return { ...state, loading: true };
     case ActionTypes.BOOK_DELETE_SUCCESS:
-      return { loading: false, book: action.payload, success: true };
+      return {
+        ...state,
+        loading: false,
+        books: state.filter((book) => book._id !== action.payload),
+        success: true,
+      };
     case ActionTypes.BOOK_DELETE_FAIL:
-      return { loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }
@@ -66,33 +73,53 @@ function bookSaveReducer(state = { book: {} }, action) {
   }
 }
 
-function bookReadSaveReducer(state = {}, action) {
+function bookReadSaveReducer(state = { books: [] }, action) {
   switch (action.type) {
     case ActionTypes.BOOK_READ_REQUEST:
       return { ...state, loading: true };
-    case ActionTypes.BOOK_READ_SUCCESS:
-      return { loading: false, book: action.payload, success: true };
+    case ActionTypes.BOOK_READ_SUCCESS: {
+      return Object.assign({}, state, {
+        books: state.books.map((book) => {
+          if (book.id !== action.payload) {
+            return book;
+          }
+          return Object.assign({}, book, {
+            isRead: !book.isRead,
+          });
+        }),
+      });
+    }
     case ActionTypes.BOOK_READ_FAIL:
-      return { ...state, loading: false, errror: action.payload };
-    case ActionTypes.BOOK_READ_RESET:
-      return {};
+      return Object.assign({}, state, {
+        loading: false,
+        errror: action.payload,
+      });
     default:
       return state;
   }
 }
-function bookRatingSaveReducer(state = { book: {} }, action) {
+function bookRatingSaveReducer(state = { books: [] }, action) {
   switch (action.type) {
     case ActionTypes.BOOK_RATING_REQUEST:
-      return { ...state, loading: true };
-    case ActionTypes.BOOK_RATING_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        rating: action.payload,
-        success: true,
-      };
+      return Object.assign({}, state, { loading: true });
+    case ActionTypes.BOOK_RATING_SUCCESS: {
+      return Object.assign({}, state, {
+        books: state.books.map((book) => {
+          if (book.id !== action.payload) {
+            return book;
+          }
+          return Object.assign({}, book, {
+            rating: action.payload.rating,
+          });
+        }),
+      });
+    }
     case ActionTypes.BOOK_RATING_FAIL:
-      return { ...state, loading: false, errror: action.payload };
+      return Object.assign({}, state, {
+        loading: false,
+        errror: action.payload,
+      });
+
     default:
       return state;
   }

@@ -3,11 +3,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Form } from "react-bootstrap";
 import styled from "styled-components/macro";
-import { login } from "../redux/actions/userActions";
+import { login } from "../redux/actions/authActions";
 
 export default function Login(props) {
   let history = useHistory();
-  const selectedUser = useSelector((state) => state.authR);
+  const selectedUser = useSelector((state) => state.auth);
   const { loading, user, error } = selectedUser;
 
   const dispatch = useDispatch();
@@ -17,9 +17,7 @@ export default function Login(props) {
   const [icon, setIcon] = useState("fa fa-lock");
 
   useEffect(() => {
-    if (user?.token) {
-      history.push("/");
-    }
+    user && history.push("/");
     return () => {};
   });
 
