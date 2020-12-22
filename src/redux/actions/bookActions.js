@@ -26,7 +26,7 @@ const getUserBooks = (id) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ActionTypes.USER_BOOK_LIST_FAIL,
-      payload: error.message,
+      payload: error.response.data.message,
     });
   }
 };

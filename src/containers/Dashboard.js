@@ -7,12 +7,9 @@ import { saveBook } from "../redux/actions/bookActions";
 import styled from "styled-components";
 
 export default function Dashboard() {
-  const selectedUser = useSelector((state) => state.auth);
-  const { user } = selectedUser;
-
-  const userBooks = useSelector((state) => state.userBooks);
+  const { user } = useSelector((state) => state.auth);
+  const { books, loading, error } = useSelector((state) => state.userBooks);
   //const bookList = useSelector((state) => state.bookList);
-  const { books, loading, error } = userBooks;
   //const { bookss, loading: userbooksLoading, error: userbookserror } = bookList;
   const dispatch = useDispatch();
   const [isMounted, setIsMounted] = useState(false);
@@ -43,6 +40,7 @@ export default function Dashboard() {
     error: errorSave,
   } = bookSave;
 
+  // on save modal close
   React.useEffect(() => {
     if (successSave) {
       handleClose();
@@ -62,14 +60,13 @@ export default function Dashboard() {
     setUrl(book.url);
   };
 
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
     const newBook = { _id: id, title, author, owner: user.id, url };
-    dispatch(saveBook(newBook));
-    setTimeout(() => {
+    dispatch(saveBook(newBook)).then(() => {
       dispatch(getUserBooks(user.id));
-    }, 5000);
-  };
+    });
+  }
 
   const styles = {
     cardHead: { backgroundColor: "#d477b0", color: "var(--veryBlue)" },
@@ -78,15 +75,15 @@ export default function Dashboard() {
   };
   // create and update end
   return loading ? (
-    <Spinner animation="border" role="status" className="mt-3 ml-3">
-      <span className="sr-only">Loading...</span>
+    <Spinner animation='border' role='status' className='mt-3 ml-3'>
+      <span className='sr-only'>Loading...</span>
     </Spinner>
   ) : error ? (
     <div>{error}</div>
   ) : (
     <StyledBooks>
-      <div className="modal-container">
-        <button className="create-book-btn" onClick={() => openModal({})}>
+      <div className='modal-container'>
+        <button className='create-book-btn' onClick={() => openModal({})}>
           +
         </button>
       </div>
@@ -98,30 +95,30 @@ export default function Dashboard() {
         </Modal.Header>
         <Modal.Body style={styles.cardBody}>
           <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="title">
+            <Form.Group controlId='title'>
               <Form.Label>Title</Form.Label>
               <Form.Control
                 autoFocus
-                type="text"
+                type='text'
                 value={title || ""}
                 onChange={(e) => setTitle(e.target.value)}
               />
             </Form.Group>
-            <Form.Group controlId="url">
+            <Form.Group controlId='url'>
               <Form.Label>Url</Form.Label>
               <Form.Control
                 autoFocus
-                type="text"
+                type='text'
                 value={url || ""}
                 onChange={(e) => setUrl(e.target.value)}
               />
             </Form.Group>
-            <Form.Group controlId="email" bssize="large">
+            <Form.Group controlId='email' bssize='large'>
               <Form.Label>Author</Form.Label>
               <Form.Control
                 autoFocus
                 required
-                type="text"
+                type='text'
                 value={author || ""}
                 onChange={(e) => setAuthor(e.target.value)}
               />
@@ -129,21 +126,21 @@ export default function Dashboard() {
           </Form>
         </Modal.Body>
         <Modal.Footer style={styles.cardBottom}>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant='secondary' onClick={handleClose}>
             Close
           </Button>
           <Button
-            variant="info ml-2"
-            type="submit"
+            variant='info ml-2'
+            type='submit'
             onClick={handleSubmit}
-            className="text-blue"
+            className='text-blue'
           >
             {id ? "Update" : "Create"}
           </Button>
         </Modal.Footer>
       </Modal>
 
-      <div className="books container">
+      <div className='books container'>
         {books?.map((book) => {
           return <Book book={book} edit={openModal} key={book._id} />;
         })}
